@@ -34,7 +34,9 @@ const ResponsiveAppBar = (props: { title: string }) => {
             component="div"
             sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
           >
-            {props.title}
+            <Link href="/" underline="none" sx={{ color: 'white' }}>
+              {props.title}
+            </Link>
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -69,7 +71,7 @@ const ResponsiveAppBar = (props: { title: string }) => {
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">
-                    <Link href="#" underline="none">
+                    <Link href={"/" + page.toLowerCase()} underline="none">
                       {page}
                     </Link>
                   </Typography>
@@ -83,7 +85,9 @@ const ResponsiveAppBar = (props: { title: string }) => {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
           >
-            LOGO
+            <Link href="/" underline="none" sx={{ color: 'white' }}>
+              {props.title}
+            </Link>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
@@ -91,7 +95,7 @@ const ResponsiveAppBar = (props: { title: string }) => {
                 key={page}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
-                href="#"
+                href={"/" + page.toLowerCase()}
               >
                 {page}
               </Button>
