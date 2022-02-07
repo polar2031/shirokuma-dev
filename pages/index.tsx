@@ -4,7 +4,7 @@ import ResponsiveAppBar from '../component/nav'
 
 const Home = (props: { title: string }) => {
   return (
-      <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
+    <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
   )
 }
 
