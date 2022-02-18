@@ -1,7 +1,7 @@
 import { GetStaticProps } from 'next'
 import { fetchAPI } from "../lib/api"
-import ResponsiveAppBar from '../component/nav'
 import { Box, Container, Link } from '@mui/material'
+import { getDefaultLayout } from '../component/layout'
 
 interface Article {
   id: string
@@ -10,10 +10,8 @@ interface Article {
   }
 }
 
-const Home = (props: { title: string, articles: Article[] }) => {
+const Blog = (props: { articles: Article[] }) => {
   return (
-    <>
-      <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
       <Container>
         {props.articles.map(article => {
           return (
@@ -25,16 +23,12 @@ const Home = (props: { title: string, articles: Article[] }) => {
           )
         })}
       </Container>
-    </>
   )
 }
 
 export const getStaticProps: GetStaticProps = async () => {
   // Run API calls in parallel
-  const [site, page] = await Promise.all([
-    fetchAPI("/site", {
-      populate: "*",
-    }),
+  const [page] = await Promise.all([
     fetchAPI("/articles", {
       fields: ["title", "CanonicalUrl"],
       pagination: {
@@ -45,11 +39,11 @@ export const getStaticProps: GetStaticProps = async () => {
 
   return {
     props: {
-      title: site.data.attributes.title,
       articles: page.data,
     },
     revalidate: 1,
   }
 }
 
-export default Home
+Blog.getLayout = getDefaultLayout
+export default Blog

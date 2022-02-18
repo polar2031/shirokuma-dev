@@ -1,22 +1,19 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { ParsedUrlQuery } from 'querystring'
-import ResponsiveAppBar from '../../component/nav'
 import { fetchAPI } from '../../lib/api'
 import ReactMarkdown from 'react-markdown'
 import { Container } from '@mui/material'
+import { getDefaultLayout } from '../../component/layout'
 
 interface IParams extends ParsedUrlQuery {
     slug: string
 }
 
-const Article = (props: { title: string , article: {title: string, content: string}}) => {
+const Article = (props: { article: {title: string, content: string}}) => {
   return (
-      <>
-      <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
       <Container>
       <ReactMarkdown children={props.article.content}></ReactMarkdown>
       </Container>
-      </>
   )
 }
 
@@ -51,7 +48,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   return {
     props: {
-        title: siteRes.data.attributes.title,
         article: {
             title: articlesRes.data[0].attributes.title,
             content: articlesRes.data[0].attributes.content,
@@ -61,4 +57,5 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 }
 
+Article.getLayout = getDefaultLayout
 export default Article

@@ -1,25 +1,21 @@
 import { GetStaticProps } from 'next'
-import { fetchAPI } from "../lib/api"
-import ResponsiveAppBar from '../component/nav'
+import { getDefaultLayout } from '../component/layout'
 
-const Home = (props: { title: string }) => {
+const Home = (props: {  }) => {
   return (
-    <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
+    <></>
   )
 }
 
 export const getStaticProps: GetStaticProps = async () => {
   // Run API calls in parallel
-  const [site] = await Promise.all([
-    fetchAPI("/site", {
-      populate: "*",
-    }),
-  ])
+  const [] = await Promise.all([])
 
   return {
-    props: { title: site.data.attributes.title },
+    props: {},
     revalidate: 1,
   }
 }
 
+Home.getLayout = getDefaultLayout
 export default Home

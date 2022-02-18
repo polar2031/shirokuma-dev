@@ -1,6 +1,8 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import type { ReactElement, ReactNode } from 'react'
+import type { NextPage } from 'next'
 
 const theme = createTheme({
   palette: {
@@ -13,10 +15,19 @@ const theme = createTheme({
   },
 });
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return (<ThemeProvider theme={theme}>
-    <Component {...pageProps} />
-  </ThemeProvider>)
+type NextPageWithLayout = NextPage & {
+  getLayout?: (page: ReactElement) => ReactNode
 }
 
-export default MyApp
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout
+}
+
+export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const getLayout = Component.getLayout ?? ((page) => page)
+  return (
+    <ThemeProvider theme={theme}>
+      {getLayout(<Component {...pageProps} />)}
+    </ThemeProvider>
+  )
+}
