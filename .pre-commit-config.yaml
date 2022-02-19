@@ -1,0 +1,25 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: "" # Use the sha or tag you want to point at
+    hooks:
+      - id: prettier
+  - repo: local
+    hooks:
+      - id: nextLint
+        name: nextLint
+        entry: npm run lintAndFix
+        pass_filenames: false
+        language: node
+        types_or: [javascript, jsx, ts, tsx]
+        args: []
+        require_serial: false
+        minimum_pre_commit_version: "0"

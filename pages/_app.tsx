@@ -1,33 +1,33 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import type { ReactElement, ReactNode } from 'react'
-import type { NextPage } from 'next'
+import "../styles/globals.css";
+import type { AppProps } from "next/app";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import type { ReactElement, ReactNode } from "react";
+import type { NextPage } from "next";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#4b71a6',
+      main: "#4b71a6",
     },
     secondary: {
-      main: '#bbdefb',
+      main: "#bbdefb",
     },
   },
 });
 
 type NextPageWithLayout = NextPage & {
-  getLayout?: (page: ReactElement) => ReactNode
-}
+  getLayout?: (page: ReactElement) => ReactNode;
+};
 
 type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout
-}
+  Component: NextPageWithLayout;
+};
 
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  const getLayout = Component.getLayout ?? ((page) => page)
+  const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <ThemeProvider theme={theme}>
       {getLayout(<Component {...pageProps} />)}
     </ThemeProvider>
-  )
+  );
 }

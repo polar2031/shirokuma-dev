@@ -1,30 +1,33 @@
-import { GetStaticProps } from 'next'
-import { fetchAPI } from "../lib/api"
-import { Box, Container, Link } from '@mui/material'
-import { getDefaultLayout } from '../component/layout'
+import { GetStaticProps } from "next";
+import { Box, Container, Link } from "@mui/material";
+import { fetchAPI } from "../lib/api";
+import { getDefaultLayout } from "../component/layout";
 
 interface Article {
-  id: string
+  id: string;
   attributes: {
-    CanonicalUrl: string
-  }
+    CanonicalUrl: string;
+  };
 }
 
 const Blog = (props: { articles: Article[] }) => {
   return (
-      <Container>
-        {props.articles.map(article => {
-          return (
-            <Box m={1} key={article.attributes.CanonicalUrl}>
-              <Link href={'/blog/' + article.attributes.CanonicalUrl} underline="none">
+    <Container>
+      {props.articles.map((article) => {
+        return (
+          <Box m={1} key={article.attributes.CanonicalUrl}>
+            <Link
+              href={"/blog/" + article.attributes.CanonicalUrl}
+              underline="none"
+            >
               {article.attributes.CanonicalUrl}
-              </Link>
-            </Box>
-          )
-        })}
-      </Container>
-  )
-}
+            </Link>
+          </Box>
+        );
+      })}
+    </Container>
+  );
+};
 
 export const getStaticProps: GetStaticProps = async () => {
   // Run API calls in parallel
@@ -33,17 +36,17 @@ export const getStaticProps: GetStaticProps = async () => {
       fields: ["title", "CanonicalUrl"],
       pagination: {
         pageSize: 10,
-      }
-    })
-  ])
+      },
+    }),
+  ]);
 
   return {
     props: {
       articles: page.data,
     },
     revalidate: 1,
-  }
-}
+  };
+};
 
-Blog.getLayout = getDefaultLayout
-export default Blog
+Blog.getLayout = getDefaultLayout;
+export default Blog;
