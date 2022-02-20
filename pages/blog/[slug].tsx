@@ -41,7 +41,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
           $eq: slug,
         },
       },
-      fields: ["content"],
+      fields: ["title", "content"],
     }),
   ]);
 
