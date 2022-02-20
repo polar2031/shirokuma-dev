@@ -27,6 +27,7 @@ export async function fetchAPI(
   const mergedOptions = {
     headers: {
       "Content-Type": "application/json",
+      Authorization: "Bearer " + process.env.API_TOKEN || "",
     },
     ...options,
   };
