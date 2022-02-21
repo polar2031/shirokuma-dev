@@ -6,12 +6,7 @@ type Props = {
 };
 
 export default function Layout({ children }: Props) {
-  return (
-    <>
-      <ResponsiveAppBar></ResponsiveAppBar>
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }
 
 export function getDefaultLayout(page: ReactElement) {

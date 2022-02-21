@@ -1,50 +1,84 @@
-import { GetStaticProps } from "next";
-import { Box, Container, Link } from "@mui/material";
-import { fetchAPI } from "../lib/api";
+import { GetServerSideProps } from "next";
+import Link from "next/link";
+import {
+  Box,
+  Container,
+  Link as MuiLink,
+  Pagination,
+  PaginationItem,
+} from "@mui/material";
 import { getDefaultLayout } from "../component/layout";
+import {
+  getArticleListByPage,
+  getArticlePageSize,
+  getSiteTitle,
+  IArticleList,
+} from "../lib/dataFetching";
+import ResponsiveAppBar from "../component/nav";
 
-interface Article {
-  id: string;
-  attributes: {
-    CanonicalUrl: string;
-  };
-}
-
-const Blog = (props: { articles: Article[] }) => {
+const Blog = (props: {
+  title: string;
+  articles: IArticleList;
+  pageSize: number;
+  currentPage: number;
+}) => {
   return (
-    <Container>
-      {props.articles.map((article) => {
-        return (
-          <Box m={1} key={article.attributes.CanonicalUrl}>
-            <Link
-              href={"/blog/" + article.attributes.CanonicalUrl}
-              underline="none"
-            >
-              {article.attributes.CanonicalUrl}
-            </Link>
-          </Box>
-        );
-      })}
-    </Container>
+    <>
+      <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
+      <Container>
+        {props.articles.map((article) => {
+          return (
+            <Box m={1} key={article.canonicalUrl}>
+              <MuiLink
+                component={Link}
+                href={`/blog/${article.canonicalUrl}`}
+                underline="none"
+              >
+                {article.title}
+              </MuiLink>
+            </Box>
+          );
+        })}
+        <Pagination
+          count={props.pageSize}
+          page={props.currentPage}
+          shape="rounded"
+          renderItem={(item) => (
+            <PaginationItem
+              component={MuiLink}
+              href={`/blog${item.page === 1 ? "" : `?page=${item.page}`}`}
+              {...item}
+            />
+          )}
+        />
+      </Container>
+    </>
   );
 };
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   // Run API calls in parallel
-  const [page] = await Promise.all([
-    fetchAPI("/articles", {
-      fields: ["title", "CanonicalUrl"],
-      pagination: {
-        pageSize: 10,
-      },
-    }),
+  let page: number;
+  try {
+    page = parseInt(context.query.page as string);
+    page = isNaN(page) ? 1 : page;
+  } catch {
+    page = 1;
+  }
+
+  const [title, articleList, pageSize] = await Promise.all([
+    getSiteTitle(),
+    getArticleListByPage(page),
+    getArticlePageSize(),
   ]);
 
   return {
     props: {
-      articles: page.data,
+      title: title,
+      articles: articleList,
+      pageSize: pageSize,
+      currentPage: page,
     },
-    revalidate: 1,
   };
 };
 

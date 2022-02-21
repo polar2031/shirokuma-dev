@@ -10,11 +10,10 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import Link from "@mui/material/Link";
-import { useSiteTitle } from "../lib/dataFetching";
 
 const pages = ["Blog", "Profile"];
 
-const ResponsiveAppBar = () => {
+const ResponsiveAppBar = (props: { title: string }) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -27,8 +26,6 @@ const ResponsiveAppBar = () => {
     setAnchorElNav(null);
   };
 
-  const title = useSiteTitle();
-
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -40,7 +37,7 @@ const ResponsiveAppBar = () => {
             sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
           >
             <Link href="/" underline="none" sx={{ color: "white" }}>
-              {title}
+              {props.title}
             </Link>
           </Typography>
 
@@ -91,7 +88,7 @@ const ResponsiveAppBar = () => {
             sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
           >
             <Link href="/" underline="none" sx={{ color: "white" }}>
-              {title}
+              {props.title}
             </Link>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>

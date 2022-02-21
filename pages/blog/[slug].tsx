@@ -3,54 +3,52 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import ReactMarkdown from "react-markdown";
 import { Container } from "@mui/material";
 import { getDefaultLayout } from "../../component/layout";
-import { fetchAPI } from "../../lib/api";
+import {
+  getArticle,
+  getArticleList,
+  getSiteTitle,
+} from "../../lib/dataFetching";
+import ResponsiveAppBar from "../../component/nav";
 
 interface IParams extends ParsedUrlQuery {
   slug: string;
 }
 
-const Article = (props: { article: { title: string; content: string } }) => {
+const Article = (props: {
+  title: string;
+  article: { title: string; content: string };
+}) => {
   return (
-    <Container>
-      <ReactMarkdown>{props.article.content}</ReactMarkdown>
-    </Container>
+    <>
+      <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
+      <Container>
+        <ReactMarkdown>{props.article.content}</ReactMarkdown>
+      </Container>
+    </>
   );
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const articlesRes = await fetchAPI("/articles", { fields: ["CanonicalUrl"] });
-
+  const [articleList] = await Promise.all([getArticleList()]);
   return {
-    paths: articlesRes.data.map(
-      (article: { attributes: { CanonicalUrl: string } }) => ({
-        params: {
-          slug: article.attributes.CanonicalUrl,
-        },
-      })
-    ),
+    paths: articleList.map((article) => ({
+      params: { slug: article.canonicalUrl },
+    })),
     fallback: false,
   };
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const { slug } = context.params as IParams;
-  const [articlesRes] = await Promise.all([
-    fetchAPI("/articles", {
-      filters: {
-        CanonicalUrl: {
-          $eq: slug,
-        },
-      },
-      fields: ["title", "content"],
-    }),
+  const [title, article] = await Promise.all([
+    getSiteTitle(),
+    getArticle(slug),
   ]);
 
   return {
     props: {
-      article: {
-        title: articlesRes.data[0].attributes.title,
-        content: articlesRes.data[0].attributes.content,
-      },
+      title: title,
+      article: article,
     },
     revalidate: 1,
   };
