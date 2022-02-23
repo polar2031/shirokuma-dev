@@ -25,33 +25,42 @@ const Blog = (props: {
   return (
     <>
       <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
-      <Container>
-        {props.articles.map((article) => {
-          return (
-            <Box m={1} key={article.canonicalUrl}>
-              <MuiLink
-                component={Link}
-                href={`/blog/${article.canonicalUrl}`}
-                underline="none"
-              >
-                {article.title}
-              </MuiLink>
-            </Box>
-          );
-        })}
-        <Pagination
-          count={props.pageSize}
-          page={props.currentPage}
-          shape="rounded"
-          renderItem={(item) => (
-            <PaginationItem
-              component={MuiLink}
-              href={`/blog${item.page === 1 ? "" : `?page=${item.page}`}`}
-              {...item}
+      <main>
+        <Container>
+          {props.articles.map((article) => {
+            return (
+              <Box m={1} key={article.canonicalUrl}>
+                <MuiLink
+                  component={Link}
+                  href={`/blog/${article.canonicalUrl}`}
+                  underline="none"
+                >
+                  {article.title}
+                </MuiLink>
+              </Box>
+            );
+          })}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Pagination
+              count={props.pageSize}
+              page={props.currentPage}
+              shape="rounded"
+              renderItem={(item) => (
+                <PaginationItem
+                  component={MuiLink}
+                  href={`/blog${item.page === 1 ? "" : `?page=${item.page}`}`}
+                  {...item}
+                />
+              )}
             />
-          )}
-        />
-      </Container>
+          </Box>
+        </Container>
+      </main>
     </>
   );
 };
