@@ -6,6 +6,7 @@ import {
   Link as MuiLink,
   Pagination,
   PaginationItem,
+  Stack,
 } from "@mui/material";
 import { getDefaultLayout } from "../component/layout";
 import {
@@ -30,13 +31,9 @@ const Blog = (props: {
           {props.articles.map((article) => {
             return (
               <Box m={1} key={article.canonicalUrl}>
-                <MuiLink
-                  component={Link}
-                  href={`/blog/${article.canonicalUrl}`}
-                  underline="none"
-                >
-                  {article.title}
-                </MuiLink>
+                <Link href={`/blog/${article.canonicalUrl}`} passHref>
+                  <MuiLink underline="none">{article.title}</MuiLink>
+                </Link>
               </Box>
             );
           })}
