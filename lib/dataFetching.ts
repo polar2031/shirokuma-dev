@@ -12,6 +12,9 @@ export type IArticleList = Array<{
 
 export interface IArticle {
   title: string;
+  tags: Array<string>;
+  createdAt: string;
+  updatedAt: string;
   content: string;
 }
 
@@ -25,16 +28,11 @@ export const getSiteTitle = (): Promise<string> => {
   });
 };
 
-export const getArticleList = (): Promise<IArticleList> => {
+export const getArticleUrlList = (): Promise<Array<string>> => {
   return fetchAPI("/articles", {
     fields: ["title", "canonicalUrl", "summary"],
   }).then((res) => {
-    return res.data.map((article: any) => ({
-      title: article.attributes.title,
-      canonicalUrl: article.attributes.canonicalUrl,
-      tags: [],
-      summary: article.attributes.summary,
-    }));
+    return res.data.map((article: any) => article.attributes.canonicalUrl);
   });
 };
 
@@ -83,17 +81,23 @@ export const getArticlePageSize = (pageSize = 10): Promise<number> => {
 
 export const getArticle = (slug: string): Promise<IArticle> => {
   return fetchAPI("/articles", {
+    fields: ["title", "content", "createdAt", "updatedAt"],
+    populate: ["tags"],
     filters: {
       canonicalUrl: {
         $eq: slug,
       },
     },
-    fields: ["title", "content"],
   }).then((res) => {
     if (res.data.length > 0) {
       return {
         title: res.data[0].attributes.title,
         content: res.data[0].attributes.content,
+        tags: res.data[0].attributes.tags.data.map((tag: any) => {
+          return tag.attributes.name;
+        }),
+        createdAt: res.data[0].attributes.createdAt,
+        updatedAt: res.data[0].attributes.updatedAt,
       };
     } else {
       throw new NotFound(`No this article`);

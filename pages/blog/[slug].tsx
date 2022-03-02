@@ -1,35 +1,51 @@
 import { ParsedUrlQuery } from "querystring";
 import { GetStaticPaths, GetStaticProps } from "next";
 import ReactMarkdown from "react-markdown";
-import { Container } from "@mui/material";
+import { Container, Skeleton, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { NotFound } from "@curveball/http-errors/dist";
+import { useEffect, useState } from "react";
 import { getDefaultLayout } from "../../component/layout";
 import {
   getArticle,
-  getArticleList,
+  getArticleUrlList,
   getSiteTitle,
+  IArticle,
 } from "../../lib/dataFetching";
 import ResponsiveAppBar from "../../component/nav";
+import TagList from "../../component/tagList";
 
 interface IParams extends ParsedUrlQuery {
   slug: string;
 }
 
-const Article = (props: {
-  title: string;
-  article: { title: string; content: string };
-}) => {
+const Article = (props: { title: string; article: IArticle }) => {
   const { isFallback } = useRouter();
+  const [updatedDate, setDate] = useState("");
 
+  useEffect(() => {
+    setDate(new Date(Date.parse(props.article.updatedAt)).toLocaleDateString());
+  });
   if (isFallback) {
-    return <>Loading</>;
+    return (
+      <>
+        <ResponsiveAppBar title={""}></ResponsiveAppBar>
+        <Container>
+          <Skeleton animation="wave" />
+        </Container>
+      </>
+    );
   }
 
   return (
     <>
       <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
-      <Container>
+      <Container sx={{ marginY: 1 }}>
+        <Typography variant="h1" align="center">
+          {props.article.title}
+        </Typography>
+        <TagList tags={props.article.tags}></TagList>
+        <Typography>Last Update: {updatedDate}</Typography>
         <ReactMarkdown>{props.article.content}</ReactMarkdown>
       </Container>
     </>
@@ -37,10 +53,10 @@ const Article = (props: {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const [articleList] = await Promise.all([getArticleList()]);
+  const [urlList] = await Promise.all([getArticleUrlList()]);
   return {
-    paths: articleList.map((article) => ({
-      params: { slug: article.canonicalUrl },
+    paths: urlList.map((url) => ({
+      params: { slug: url },
     })),
     fallback: true,
   };
