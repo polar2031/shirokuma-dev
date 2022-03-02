@@ -20,12 +20,14 @@ interface IParams extends ParsedUrlQuery {
 }
 
 const Article = (props: { title: string; article: IArticle }) => {
-  const { isFallback } = useRouter();
+  // useState must not called conditionally
   const [updatedDate, setDate] = useState("");
-
   useEffect(() => {
     setDate(new Date(Date.parse(props.article.updatedAt)).toLocaleDateString());
   });
+
+  const { isFallback } = useRouter();
+
   if (isFallback) {
     return (
       <>
@@ -41,7 +43,7 @@ const Article = (props: { title: string; article: IArticle }) => {
     <>
       <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
       <Container sx={{ marginY: 1 }}>
-        <Typography variant="h1" align="center">
+        <Typography variant="h3" align="center" sx={{ fontWeight: 700 }}>
           {props.article.title}
         </Typography>
         <TagList tags={props.article.tags}></TagList>
