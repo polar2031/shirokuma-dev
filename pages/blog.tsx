@@ -5,13 +5,11 @@ import {
   Card,
   CardActions,
   CardContent,
-  Chip,
   Container,
   Grid,
   Link as MuiLink,
   Pagination,
   PaginationItem,
-  Stack,
   Typography,
 } from "@mui/material";
 import { getDefaultLayout } from "../component/layout";
@@ -22,6 +20,7 @@ import {
   IArticleList,
 } from "../lib/dataFetching";
 import ResponsiveAppBar from "../component/nav";
+import TagList from "../component/tagList";
 
 const Blog = (props: {
   title: string;
@@ -46,27 +45,7 @@ const Blog = (props: {
                       </Typography>
 
                       {/* list tag */}
-                      <Stack
-                        direction="row"
-                        spacing={1}
-                        onMouseDown={(event) => event.stopPropagation()}
-                        onClick={(event) => {
-                          event.stopPropagation();
-                        }}
-                      >
-                        {article.tags.map((tag) => {
-                          return (
-                            <Link href={`/tags/${tag}`} key={tag} passHref>
-                              <Chip
-                                label={tag}
-                                size="small"
-                                key={tag}
-                                component={MuiLink}
-                              />
-                            </Link>
-                          );
-                        })}
-                      </Stack>
+                      <TagList tags={article.tags}></TagList>
 
                       {/* summary */}
                       <Typography
