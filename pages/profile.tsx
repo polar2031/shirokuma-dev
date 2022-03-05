@@ -38,14 +38,18 @@ const Profile = (props: {
         }}
       >
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
-            <Card>
-              <CardMedia
-                component="img"
-                image={getStrapiURL() + props.profilePictureUrl}
-              ></CardMedia>
-            </Card>
-          </Grid>
+          {props.profilePictureUrl ? (
+            <Grid item xs={12} md={6}>
+              <Card>
+                <CardMedia
+                  component="img"
+                  image={getStrapiURL() + props.profilePictureUrl}
+                ></CardMedia>
+              </Card>
+            </Grid>
+          ) : (
+            <></>
+          )}
           <Grid item xs={12} md={6}>
             <Box margin={2}>
               <Stack spacing={1}>
