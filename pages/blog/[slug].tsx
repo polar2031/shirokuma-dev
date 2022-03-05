@@ -24,7 +24,7 @@ const Article = (props: { title: string; article: IArticle }) => {
   const [updatedDate, setDate] = useState("");
   useEffect(() => {
     setDate(new Date(Date.parse(props.article.updatedAt)).toLocaleDateString());
-  });
+  }, []);
 
   const { isFallback } = useRouter();
 
