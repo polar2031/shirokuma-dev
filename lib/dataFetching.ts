@@ -138,6 +138,10 @@ export const getProfilePictureUrl = (): Promise<string> => {
     populate: ["picture"],
     fields: ["id"],
   }).then((res) => {
-    return res.data.attributes.picture.data.attributes.url;
+    if (res.data.attributes.picture.data) {
+      return res.data.attributes.picture.data.attributes.url;
+    } else {
+      return null;
+    }
   });
 };
