@@ -9,7 +9,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NODE_ENV production
-RUN npm run build
+# without local suffix, next will copy the env file to standalone output
+# which might leak secret
+RUN --mount=type=secret,id=env,dst=/app/.env.production.local npm run build
 
 FROM node:16-alpine AS runner
 WORKDIR /app
