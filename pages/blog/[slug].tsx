@@ -1,7 +1,7 @@
 import { ParsedUrlQuery } from "querystring";
 import { GetStaticPaths, GetStaticProps } from "next";
 import ReactMarkdown from "react-markdown";
-import { Container, Skeleton, Typography } from "@mui/material";
+import { Container, Link, Skeleton, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { NotFound } from "@curveball/http-errors/dist";
 import { useEffect, useState } from "react";
@@ -52,24 +52,31 @@ const Article = (props: { title: string; article: IArticle }) => {
         <Typography>Last Update: {updatedDate}</Typography>
         <ReactMarkdown
           components={{
+            a: ({ node, ...props }) => (
+              <Link {...props} underline="none"></Link>
+            ),
             img: ({ node, ...props }) => (
               <img style={{ maxWidth: "100%" }} {...props} />
             ),
-            code({ node, inline, className, children, ...props }) {
+            code: ({ node, inline, className, children, ...props }) => {
               const match = /language-(\w+)/.exec(className || "");
-              return !inline && match ? (
+              return (
                 <SyntaxHighlighter
                   style={tomorrowNight}
-                  language={match[1]}
-                  PreTag="div"
+                  customStyle={
+                    inline
+                      ? {
+                          display: "inline-grid",
+                          padding: "0em .2em",
+                          margin: "0",
+                        }
+                      : {}
+                  }
+                  language={match ? match[1] : "plaintext"}
                   {...props}
                 >
                   {String(children).replace(/\n$/, "")}
                 </SyntaxHighlighter>
-              ) : (
-                <code className={className} {...props}>
-                  {children}
-                </code>
               );
             },
           }}
