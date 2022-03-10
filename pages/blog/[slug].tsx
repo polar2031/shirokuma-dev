@@ -5,6 +5,8 @@ import { Container, Skeleton, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { NotFound } from "@curveball/http-errors/dist";
 import { useEffect, useState } from "react";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { tomorrowNight } from "react-syntax-highlighter/dist/cjs/styles/hljs";
 import { getDefaultLayout } from "../../component/layout";
 import {
   getArticle,
@@ -48,7 +50,32 @@ const Article = (props: { title: string; article: IArticle }) => {
         </Typography>
         <TagList tags={props.article.tags}></TagList>
         <Typography>Last Update: {updatedDate}</Typography>
-        <ReactMarkdown>{props.article.content}</ReactMarkdown>
+        <ReactMarkdown
+          components={{
+            img: ({ node, ...props }) => (
+              <img style={{ maxWidth: "100%" }} {...props} />
+            ),
+            code({ node, inline, className, children, ...props }) {
+              const match = /language-(\w+)/.exec(className || "");
+              return !inline && match ? (
+                <SyntaxHighlighter
+                  style={tomorrowNight}
+                  language={match[1]}
+                  PreTag="div"
+                  {...props}
+                >
+                  {String(children).replace(/\n$/, "")}
+                </SyntaxHighlighter>
+              ) : (
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              );
+            },
+          }}
+        >
+          {props.article.content}
+        </ReactMarkdown>
       </Container>
     </>
   );
