@@ -1,12 +1,12 @@
 import { ParsedUrlQuery } from "querystring";
 import { GetStaticPaths, GetStaticProps } from "next";
+import Script from "next/script";
 import ReactMarkdown from "react-markdown";
 import { Container, Link, Skeleton, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { NotFound } from "@curveball/http-errors/dist";
 import { useEffect, useState } from "react";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { tomorrowNight } from "react-syntax-highlighter/dist/cjs/styles/hljs";
+import { highlightAll } from "prismjs";
 import { getDefaultLayout } from "../../component/layout";
 import {
   getArticle,
@@ -16,6 +16,7 @@ import {
 } from "../../lib/dataFetching";
 import ResponsiveAppBar from "../../component/nav";
 import TagList from "../../component/tagList";
+import "prismjs/components/prism-bash";
 
 interface IParams extends ParsedUrlQuery {
   slug: string;
@@ -26,6 +27,12 @@ const Article = (props: { title: string; article: IArticle }) => {
   const [updatedDate, setDate] = useState("");
   useEffect(() => {
     setDate(new Date(Date.parse(props.article.updatedAt)).toLocaleDateString());
+  }, [props.article.updatedAt]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      highlightAll();
+    }
   }, []);
 
   const { isFallback } = useRouter();
@@ -43,6 +50,7 @@ const Article = (props: { title: string; article: IArticle }) => {
 
   return (
     <>
+      <Script src="/prism.js" />
       <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
       <Container sx={{ marginY: 1 }}>
         <Typography variant="h3" align="center" sx={{ fontWeight: 700 }}>
@@ -60,23 +68,14 @@ const Article = (props: { title: string; article: IArticle }) => {
             ),
             code: ({ node, inline, className, children, ...props }) => {
               const match = /language-(\w+)/.exec(className || "");
-              return (
-                <SyntaxHighlighter
-                  style={tomorrowNight}
-                  customStyle={
-                    inline
-                      ? {
-                          display: "inline-grid",
-                          padding: "0em .2em",
-                          margin: "0",
-                        }
-                      : {}
-                  }
-                  language={match ? match[1] : "plaintext"}
-                  {...props}
-                >
-                  {String(children).replace(/\n$/, "")}
-                </SyntaxHighlighter>
+              return !inline && match ? (
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              ) : (
+                <code className={"language-plain"} {...props}>
+                  {children}
+                </code>
               );
             },
           }}
