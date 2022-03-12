@@ -1,6 +1,8 @@
 # Ignore artifacts:
 build
 coverage
+public
+styles
 
 # Ignore all HTML files:
 *.html

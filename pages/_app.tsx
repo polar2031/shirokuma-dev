@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import "../styles/prism.css";
 import type { AppProps } from "next/app";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import type { ReactElement, ReactNode } from "react";

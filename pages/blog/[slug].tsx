@@ -1,11 +1,13 @@
 import { ParsedUrlQuery } from "querystring";
 import { GetStaticPaths, GetStaticProps } from "next";
+import Script from "next/script";
 import ReactMarkdown from "react-markdown";
-import { Container, Skeleton, Typography } from "@mui/material";
+import { Container, Link, Skeleton, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { NotFound } from "@curveball/http-errors/dist";
 import { useEffect, useState } from "react";
 import { NextSeo } from "next-seo";
+import { highlightAll } from "prismjs";
 import { getDefaultLayout } from "../../component/layout";
 import {
   getArticle,
@@ -15,6 +17,7 @@ import {
 } from "../../lib/dataFetching";
 import ResponsiveAppBar from "../../component/nav";
 import TagList from "../../component/tagList";
+import "prismjs/components/prism-bash";
 
 interface IParams extends ParsedUrlQuery {
   slug: string;
@@ -25,6 +28,12 @@ const Article = (props: { title: string; article: IArticle }) => {
   const [updatedDate, setDate] = useState("");
   useEffect(() => {
     setDate(new Date(Date.parse(props.article.updatedAt)).toLocaleDateString());
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      highlightAll();
+    }
   }, []);
 
   const { isFallback } = useRouter();
@@ -55,6 +64,7 @@ const Article = (props: { title: string; article: IArticle }) => {
         }}
         canonical={`${process.env.NEXT_PUBLIC_SITE_URL}${asPath}`}
       />
+      <Script src="/prism.js" />
       <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
       <Container sx={{ marginY: 1 }}>
         <Typography
@@ -67,7 +77,30 @@ const Article = (props: { title: string; article: IArticle }) => {
         </Typography>
         <TagList tags={props.article.tags}></TagList>
         <Typography>Last Update: {updatedDate}</Typography>
-        <ReactMarkdown>{props.article.content}</ReactMarkdown>
+        <ReactMarkdown
+          components={{
+            a: ({ node, ...props }) => (
+              <Link {...props} underline="none"></Link>
+            ),
+            img: ({ node, ...props }) => (
+              <img style={{ maxWidth: "100%" }} {...props} />
+            ),
+            code: ({ node, inline, className, children, ...props }) => {
+              const match = /language-(\w+)/.exec(className || "");
+              return !inline && match ? (
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              ) : (
+                <code className={"language-plain"} {...props}>
+                  {children}
+                </code>
+              );
+            },
+          }}
+        >
+          {props.article.content}
+        </ReactMarkdown>
       </Container>
     </>
   );

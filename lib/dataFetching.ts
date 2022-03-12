@@ -1,4 +1,4 @@
-// eslint-disable  @typescript-eslint/no-explicit-any
+// eslint-disable @typescript-eslint/no-explicit-any
 // not a good idea to do type check while fetching data from 3rd api
 import { NotFound } from "@curveball/http-errors/dist";
 import { fetchAPI } from "./api";
