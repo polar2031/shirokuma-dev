@@ -5,6 +5,7 @@ import { Container, Skeleton, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { NotFound } from "@curveball/http-errors/dist";
 import { useEffect, useState } from "react";
+import { NextSeo } from "next-seo";
 import { getDefaultLayout } from "../../component/layout";
 import {
   getArticle,
@@ -27,11 +28,14 @@ const Article = (props: { title: string; article: IArticle }) => {
   }, []);
 
   const { isFallback } = useRouter();
+  const { asPath } = useRouter();
 
   if (isFallback) {
     return (
       <>
-        <ResponsiveAppBar title={""}></ResponsiveAppBar>
+        <ResponsiveAppBar
+          title={`讀取中...| ${props.title}`}
+        ></ResponsiveAppBar>
         <Container>
           <Skeleton animation="wave" />
         </Container>
@@ -41,9 +45,24 @@ const Article = (props: { title: string; article: IArticle }) => {
 
   return (
     <>
+      <NextSeo
+        title={`${props.article.title} | ${props.title}`}
+        description={props.article.summary}
+        openGraph={{
+          type: "article",
+          title: `${props.article.title}`,
+          url: `${process.env.NEXT_PUBLIC_SITE_URL}${asPath}`,
+        }}
+        canonical={`${process.env.NEXT_PUBLIC_SITE_URL}${asPath}`}
+      />
       <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
       <Container sx={{ marginY: 1 }}>
-        <Typography variant="h3" align="center" sx={{ fontWeight: 700 }}>
+        <Typography
+          variant="h3"
+          component="h1"
+          align="center"
+          sx={{ fontWeight: 700 }}
+        >
           {props.article.title}
         </Typography>
         <TagList tags={props.article.tags}></TagList>

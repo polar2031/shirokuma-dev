@@ -12,6 +12,8 @@ import {
   PaginationItem,
   Typography,
 } from "@mui/material";
+import { NextSeo } from "next-seo";
+import { useRouter } from "next/router";
 import { getDefaultLayout } from "../component/layout";
 import {
   getArticleListByPage,
@@ -28,8 +30,19 @@ const Blog = (props: {
   pageSize: number;
   currentPage: number;
 }) => {
+  const { asPath } = useRouter();
   return (
     <>
+      <NextSeo
+        noindex={true}
+        title={`文章列表 | ${props.title} - page ${props.currentPage}`}
+        description={`文章列表 - page ${props.currentPage}`}
+        openGraph={{
+          title: `文章列表`,
+          url: `${process.env.NEXT_PUBLIC_SITE_URL}${asPath}`,
+        }}
+        canonical={`${process.env.NEXT_PUBLIC_SITE_URL}${asPath}`}
+      />
       <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
       <main>
         <Container sx={{ marginY: 2 }}>
