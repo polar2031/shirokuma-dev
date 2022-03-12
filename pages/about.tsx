@@ -14,6 +14,8 @@ import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import Link from "@mui/material/Link";
+import { NextSeo } from "next-seo";
+import { useRouter } from "next/router";
 import { getStrapiURL } from "../lib/api";
 import { getDefaultLayout } from "../component/layout";
 import {
@@ -29,14 +31,27 @@ const Profile = (props: {
   profile: IProfile;
   profilePictureUrl: string;
 }) => {
+  const { asPath } = useRouter();
+
   return (
     <>
+      <NextSeo
+        title={`關於 | ${props.title}`}
+        openGraph={{ title: `關於` }}
+        canonical={`${process.env.NEXT_PUBLIC_SITE_URL}${asPath}`}
+      ></NextSeo>
       <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
       <Container
         sx={{
           p: 2,
         }}
       >
+        <Typography
+          variant="h3"
+          component="h1"
+          align="center"
+          sx={{ fontWeight: 700 }}
+        >{`關於我`}</Typography>
         <Grid container spacing={2}>
           {props.profilePictureUrl ? (
             <Grid item xs={12} md={6}>

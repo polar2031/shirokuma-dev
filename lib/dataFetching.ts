@@ -12,10 +12,11 @@ export type IArticleList = Array<{
 
 export interface IArticle {
   title: string;
+  summary: string;
+  content: string;
   tags: Array<string>;
   createdAt: string;
   updatedAt: string;
-  content: string;
 }
 
 export interface ITag {
@@ -81,7 +82,7 @@ export const getArticlePageSize = (pageSize = 10): Promise<number> => {
 
 export const getArticle = (slug: string): Promise<IArticle> => {
   return fetchAPI("/articles", {
-    fields: ["title", "content", "createdAt", "updatedAt"],
+    fields: ["title", "content", "summary", "createdAt", "updatedAt"],
     populate: ["tags"],
     filters: {
       canonicalUrl: {
@@ -92,6 +93,7 @@ export const getArticle = (slug: string): Promise<IArticle> => {
     if (res.data.length > 0) {
       return {
         title: res.data[0].attributes.title,
+        summary: res.data[0].attributes.summary,
         content: res.data[0].attributes.content,
         tags: res.data[0].attributes.tags.data.map((tag: any) => {
           return tag.attributes.name;
