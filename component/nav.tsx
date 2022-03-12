@@ -11,7 +11,10 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import Link from "@mui/material/Link";
 
-const pages = ["Blog", "Profile"];
+const pages = [
+  { name_display: "Blog", url: "/blogs" },
+  { name_display: "About", url: "/about" },
+];
 
 const ResponsiveAppBar = (props: { title: string }) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -71,10 +74,10 @@ const ResponsiveAppBar = (props: { title: string }) => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page.name_display} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">
-                    <Link href={"/" + page.toLowerCase()} underline="none">
-                      {page}
+                    <Link href={page.url} underline="none">
+                      {page.name_display}
                     </Link>
                   </Typography>
                 </MenuItem>
@@ -94,12 +97,12 @@ const ResponsiveAppBar = (props: { title: string }) => {
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
-                key={page}
+                key={page.name_display}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "white", display: "block" }}
-                href={"/" + page.toLowerCase()}
+                href={page.url}
               >
-                {page}
+                {page.name_display}
               </Button>
             ))}
           </Box>
