@@ -6,7 +6,7 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    console.log(`/blog/${req.query.canonical}`);
+    console.log(`Revalidate /blog/${req.query.canonical}`);
     await res.unstable_revalidate(`/blog/${req.query.canonical}`);
     return res.json({ revalidated: true });
   } catch (err) {

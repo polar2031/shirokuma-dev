@@ -6,7 +6,7 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    console.log(`/about`);
+    console.info(`Revalidate /about`);
     await res.unstable_revalidate(`/about`);
     return res.json({ revalidated: true });
   } catch (err) {
