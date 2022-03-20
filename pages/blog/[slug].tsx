@@ -139,7 +139,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       title: title,
       article: article,
     },
-    revalidate: 1,
+    revalidate: false,
   };
 };
 
