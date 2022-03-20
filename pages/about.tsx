@@ -183,7 +183,7 @@ export const getStaticProps: GetStaticProps = async () => {
       profile: profile,
       profilePictureUrl: profilePictureUrl,
     },
-    revalidate: 1,
+    revalidate: false,
   };
 };
 
