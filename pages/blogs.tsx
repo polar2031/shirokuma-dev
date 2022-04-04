@@ -23,6 +23,7 @@ import {
 } from "../lib/dataFetching";
 import ResponsiveAppBar from "../component/nav";
 import TagList from "../component/tagList";
+import { Variable } from "../site-config";
 
 const Blog = (props: {
   title: string;
@@ -39,9 +40,9 @@ const Blog = (props: {
         description={`文章列表 - page ${props.currentPage}`}
         openGraph={{
           title: `文章列表`,
-          url: `${process.env.NEXT_PUBLIC_SITE_URL}${asPath}`,
+          url: `${Variable.siteUrl}${asPath}`,
         }}
-        canonical={`${process.env.NEXT_PUBLIC_SITE_URL}${asPath}`}
+        canonical={`${Variable.siteUrl}${asPath}`}
       />
       <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
       <main>

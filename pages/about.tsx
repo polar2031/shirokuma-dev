@@ -25,6 +25,7 @@ import {
   IProfile,
 } from "../lib/dataFetching";
 import ResponsiveAppBar from "../component/nav";
+import { Variable } from "../site-config";
 
 const Profile = (props: {
   title: string;
@@ -38,7 +39,7 @@ const Profile = (props: {
       <NextSeo
         title={`關於 | ${props.title}`}
         openGraph={{ title: `關於` }}
-        canonical={`${process.env.NEXT_PUBLIC_SITE_URL}${asPath}`}
+        canonical={`${Variable.siteUrl}${asPath}`}
       ></NextSeo>
       <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
       <Container

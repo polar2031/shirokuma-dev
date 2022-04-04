@@ -18,6 +18,7 @@ import {
 import ResponsiveAppBar from "../../component/nav";
 import TagList from "../../component/tagList";
 import "prismjs/components/prism-bash";
+import { Variable } from "../../site-config";
 
 interface IParams extends ParsedUrlQuery {
   slug: string;
@@ -60,9 +61,9 @@ const Article = (props: { title: string; article: IArticle }) => {
         openGraph={{
           type: "article",
           title: `${props.article.title}`,
-          url: `${process.env.NEXT_PUBLIC_SITE_URL}${asPath}`,
+          url: `${Variable.siteUrl}${asPath}`,
         }}
-        canonical={`${process.env.NEXT_PUBLIC_SITE_URL}${asPath}`}
+        canonical={`${Variable.siteUrl}${asPath}`}
       />
       <Script src="/prism.js" />
       <ResponsiveAppBar title={props.title}></ResponsiveAppBar>

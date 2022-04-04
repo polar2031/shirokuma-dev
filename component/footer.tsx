@@ -1,6 +1,6 @@
 import { Box, Grid, Link, Typography } from "@mui/material";
 import { Fragment } from "react";
-import { variable } from "../site-config.js";
+import { Variable } from "../site-config";
 
 function createExternalLink(name: string, url: string) {
   return (
@@ -18,7 +18,7 @@ const Footer = () => {
       }}
     >
       <Grid container padding={0.5}>
-        {variable.poweredBy.length > 0 ? (
+        {Variable.poweredBy.length > 0 ? (
           <Grid item xs={12} md={6}>
             <Typography
               textAlign={{ xs: "left", md: "left" }}
@@ -27,14 +27,14 @@ const Footer = () => {
               component="p"
             >
               {"Powered by "}
-              {variable.poweredBy.slice(0, -1).map((item) => {
+              {Variable.poweredBy.slice(0, -1).map((item) => {
                 return (
                   <Fragment key={item.name}>
                     {createExternalLink(item.name, item.url)},{" "}
                   </Fragment>
                 );
               })}
-              {variable.poweredBy.slice(-1).map((item) => {
+              {Variable.poweredBy.slice(-1).map((item) => {
                 return (
                   <Fragment key={item.name}>
                     {createExternalLink(item.name, item.url)}
@@ -53,7 +53,7 @@ const Footer = () => {
             variant="caption"
             component="p"
           >
-            {variable.copyright}
+            {Variable.copyright}
           </Typography>
         </Grid>
       </Grid>

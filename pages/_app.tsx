@@ -5,7 +5,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import type { ReactElement, ReactNode } from "react";
 import type { NextPage } from "next";
 import { DefaultSeo } from "next-seo";
-import SEO from "../next-seo.config";
+import { SEO } from "../site-config";
 
 const theme = createTheme({
   palette: {

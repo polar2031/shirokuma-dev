@@ -39,7 +39,11 @@ const ResponsiveAppBar = (props: { title: string }) => {
             component="div"
             sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
           >
-            <Link href="/" underline="none" sx={{ color: "white" }}>
+            <Link
+              href="/"
+              underline="none"
+              sx={{ color: "primary.contrastText" }}
+            >
               {props.title}
             </Link>
           </Typography>
@@ -90,7 +94,11 @@ const ResponsiveAppBar = (props: { title: string }) => {
             component="div"
             sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
           >
-            <Link href="/" underline="none" sx={{ color: "white" }}>
+            <Link
+              href="/"
+              underline="none"
+              sx={{ color: "primary.contrastText" }}
+            >
               {props.title}
             </Link>
           </Typography>
@@ -99,7 +107,7 @@ const ResponsiveAppBar = (props: { title: string }) => {
               <Button
                 key={page.name_display}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
+                sx={{ my: 2, color: "primary.contrastText", display: "block" }}
                 href={page.url}
               >
                 {page.name_display}
