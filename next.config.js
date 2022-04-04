@@ -1,4 +1,7 @@
 /** @type {import('next').NextConfig} */
+
+const path = require("path");
+
 const nextConfig = {
   reactStrictMode: true,
   async redirects() {
@@ -12,6 +15,16 @@ const nextConfig = {
   },
   experimental: {
     outputStandalone: true,
+  },
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    // Important: return the modified config
+    config.plugins.push(
+      new webpack.NormalModuleReplacementPlugin(
+        /site-config.js/,
+        process.env.SITE_CONFIG || "site-config.js"
+      )
+    );
+    return config;
   },
 };
 
