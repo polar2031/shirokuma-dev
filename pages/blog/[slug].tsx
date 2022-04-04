@@ -12,18 +12,17 @@ import { getDefaultLayout } from "../../component/layout";
 import {
   getArticle,
   getArticleUrlList,
-  getSiteTitle,
   IArticle,
 } from "../../lib/dataFetching";
-import ResponsiveAppBar from "../../component/nav";
 import TagList from "../../component/tagList";
 import "prismjs/components/prism-bash";
+import { Variable } from "../../site-config";
 
 interface IParams extends ParsedUrlQuery {
   slug: string;
 }
 
-const Article = (props: { title: string; article: IArticle }) => {
+const Article = (props: { article: IArticle }) => {
   // useState must not called conditionally
   const [updatedDate, setDate] = useState("");
   useEffect(() => {
@@ -42,9 +41,6 @@ const Article = (props: { title: string; article: IArticle }) => {
   if (isFallback) {
     return (
       <>
-        <ResponsiveAppBar
-          title={`讀取中...| ${props.title}`}
-        ></ResponsiveAppBar>
         <Container>
           <Skeleton animation="wave" />
         </Container>
@@ -55,17 +51,16 @@ const Article = (props: { title: string; article: IArticle }) => {
   return (
     <>
       <NextSeo
-        title={`${props.article.title} | ${props.title}`}
+        title={`${props.article.title} | ${Variable.title}`}
         description={props.article.summary}
         openGraph={{
           type: "article",
           title: `${props.article.title}`,
-          url: `${process.env.NEXT_PUBLIC_SITE_URL}${asPath}`,
+          url: `${Variable.siteUrl}${asPath}`,
         }}
-        canonical={`${process.env.NEXT_PUBLIC_SITE_URL}${asPath}`}
+        canonical={`${Variable.siteUrl}${asPath}`}
       />
       <Script src="/prism.js" />
-      <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
       <Container sx={{ marginY: 1 }}>
         <Typography
           variant="h3"
@@ -118,12 +113,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const { slug } = context.params as IParams;
-  let title, article;
+  let article;
   try {
-    [title, article] = await Promise.all([
-      getSiteTitle(),
-      getArticle(slug),
-    ]).then((res) => {
+    [article] = await Promise.all([getArticle(slug)]).then((res) => {
       return res;
     });
   } catch (err) {
@@ -136,7 +128,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   return {
     props: {
-      title: title,
       article: article,
     },
     revalidate: false,

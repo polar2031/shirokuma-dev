@@ -40,3 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 
 .vscode/settings.json
+
+*.production.*
+*.development.*

@@ -23,12 +23,6 @@ export interface ITag {
   name: string;
 }
 
-export const getSiteTitle = (): Promise<string> => {
-  return fetchAPI("/site", { populate: "*" }).then((res) => {
-    return res.data.attributes.title;
-  });
-};
-
 export const getArticleUrlList = (): Promise<Array<string>> => {
   return fetchAPI("/articles", {
     fields: ["title", "canonicalUrl", "summary"],

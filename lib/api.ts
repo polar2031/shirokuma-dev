@@ -1,4 +1,5 @@
 import { stringify } from "qs";
+import { Variable } from "../site-config";
 
 /**
  * Get full Strapi URL from path
@@ -6,9 +7,7 @@ import { stringify } from "qs";
  * @returns {string} Full Strapi URL
  */
 export function getStrapiURL(path = "") {
-  return `${
-    process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"
-  }${path}`;
+  return `${Variable.apiUrl || "http://localhost:1337"}${path}`;
 }
 
 /**

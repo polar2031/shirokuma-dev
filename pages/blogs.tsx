@@ -18,14 +18,12 @@ import { getDefaultLayout } from "../component/layout";
 import {
   getArticleListByPage,
   getArticlePageSize,
-  getSiteTitle,
   IArticleList,
 } from "../lib/dataFetching";
-import ResponsiveAppBar from "../component/nav";
 import TagList from "../component/tagList";
+import { Variable } from "../site-config";
 
 const Blog = (props: {
-  title: string;
   articles: IArticleList;
   pageSize: number;
   currentPage: number;
@@ -35,15 +33,14 @@ const Blog = (props: {
     <>
       <NextSeo
         noindex={true}
-        title={`文章列表 | ${props.title} - page ${props.currentPage}`}
+        title={`文章列表 | ${Variable.title} - page ${props.currentPage}`}
         description={`文章列表 - page ${props.currentPage}`}
         openGraph={{
           title: `文章列表`,
-          url: `${process.env.NEXT_PUBLIC_SITE_URL}${asPath}`,
+          url: `${Variable.siteUrl}${asPath}`,
         }}
-        canonical={`${process.env.NEXT_PUBLIC_SITE_URL}${asPath}`}
+        canonical={`${Variable.siteUrl}${asPath}`}
       />
-      <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
       <main>
         <Container sx={{ marginY: 2 }}>
           <Grid container spacing={2} sx={{ marginY: 2 }}>
@@ -119,15 +116,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     page = 1;
   }
 
-  const [title, articleList, pageSize] = await Promise.all([
-    getSiteTitle(),
+  const [articleList, pageSize] = await Promise.all([
     getArticleListByPage(page),
     getArticlePageSize(),
   ]);
 
   return {
     props: {
-      title: title,
       articles: articleList,
       pageSize: pageSize,
       currentPage: page,

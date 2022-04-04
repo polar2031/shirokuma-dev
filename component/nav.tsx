@@ -10,13 +10,14 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import Link from "@mui/material/Link";
+import { Variable } from "../site-config";
 
 const pages = [
   { name_display: "Blog", url: "/blogs" },
   { name_display: "About", url: "/about" },
 ];
 
-const ResponsiveAppBar = (props: { title: string }) => {
+const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -39,8 +40,12 @@ const ResponsiveAppBar = (props: { title: string }) => {
             component="div"
             sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
           >
-            <Link href="/" underline="none" sx={{ color: "white" }}>
-              {props.title}
+            <Link
+              href="/"
+              underline="none"
+              sx={{ color: "primary.contrastText" }}
+            >
+              {Variable.title}
             </Link>
           </Typography>
 
@@ -90,8 +95,12 @@ const ResponsiveAppBar = (props: { title: string }) => {
             component="div"
             sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
           >
-            <Link href="/" underline="none" sx={{ color: "white" }}>
-              {props.title}
+            <Link
+              href="/"
+              underline="none"
+              sx={{ color: "primary.contrastText" }}
+            >
+              {Variable.title}
             </Link>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
@@ -99,7 +108,7 @@ const ResponsiveAppBar = (props: { title: string }) => {
               <Button
                 key={page.name_display}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
+                sx={{ my: 2, color: "primary.contrastText", display: "block" }}
                 href={page.url}
               >
                 {page.name_display}
