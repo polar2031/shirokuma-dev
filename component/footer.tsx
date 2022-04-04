@@ -12,52 +12,54 @@ function createExternalLink(name: string, url: string) {
 
 const Footer = () => {
   return (
-    <Box
-      sx={{
-        backgroundColor: "primary.main",
-      }}
-    >
-      <Grid container padding={0.5}>
-        {Variable.poweredBy.length > 0 ? (
+    <div className="footer">
+      <Box
+        sx={{
+          backgroundColor: "primary.main",
+        }}
+      >
+        <Grid container padding={0.5}>
+          {Variable.poweredBy.length > 0 ? (
+            <Grid item xs={12} md={6}>
+              <Typography
+                textAlign={{ xs: "left", md: "left" }}
+                color="primary.contrastText"
+                variant="caption"
+                component="p"
+              >
+                {"Powered by "}
+                {Variable.poweredBy.slice(0, -1).map((item) => {
+                  return (
+                    <Fragment key={item.name}>
+                      {createExternalLink(item.name, item.url)},{" "}
+                    </Fragment>
+                  );
+                })}
+                {Variable.poweredBy.slice(-1).map((item) => {
+                  return (
+                    <Fragment key={item.name}>
+                      {createExternalLink(item.name, item.url)}
+                    </Fragment>
+                  );
+                })}
+              </Typography>
+            </Grid>
+          ) : (
+            <></>
+          )}
           <Grid item xs={12} md={6}>
             <Typography
-              textAlign={{ xs: "left", md: "left" }}
+              textAlign={{ xs: "left", md: "right" }}
               color="primary.contrastText"
               variant="caption"
               component="p"
             >
-              {"Powered by "}
-              {Variable.poweredBy.slice(0, -1).map((item) => {
-                return (
-                  <Fragment key={item.name}>
-                    {createExternalLink(item.name, item.url)},{" "}
-                  </Fragment>
-                );
-              })}
-              {Variable.poweredBy.slice(-1).map((item) => {
-                return (
-                  <Fragment key={item.name}>
-                    {createExternalLink(item.name, item.url)}
-                  </Fragment>
-                );
-              })}
+              {Variable.copyright}
             </Typography>
           </Grid>
-        ) : (
-          <></>
-        )}
-        <Grid item xs={12} md={6}>
-          <Typography
-            textAlign={{ xs: "left", md: "right" }}
-            color="primary.contrastText"
-            variant="caption"
-            component="p"
-          >
-            {Variable.copyright}
-          </Typography>
         </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </div>
   );
 };
 

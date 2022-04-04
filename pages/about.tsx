@@ -21,27 +21,20 @@ import { getDefaultLayout } from "../component/layout";
 import {
   getProfile,
   getProfilePictureUrl,
-  getSiteTitle,
   IProfile,
 } from "../lib/dataFetching";
-import ResponsiveAppBar from "../component/nav";
 import { Variable } from "../site-config";
 
-const Profile = (props: {
-  title: string;
-  profile: IProfile;
-  profilePictureUrl: string;
-}) => {
+const Profile = (props: { profile: IProfile; profilePictureUrl: string }) => {
   const { asPath } = useRouter();
 
   return (
     <>
       <NextSeo
-        title={`關於 | ${props.title}`}
+        title={`關於 | ${Variable.title}`}
         openGraph={{ title: `關於` }}
         canonical={`${Variable.siteUrl}${asPath}`}
       ></NextSeo>
-      <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
       <Container
         sx={{
           p: 2,
@@ -172,15 +165,13 @@ const Profile = (props: {
 
 export const getStaticProps: GetStaticProps = async () => {
   // Run API calls in parallel
-  const [title, profile, profilePictureUrl] = await Promise.all([
-    getSiteTitle(),
+  const [profile, profilePictureUrl] = await Promise.all([
     getProfile(),
     getProfilePictureUrl(),
   ]);
 
   return {
     props: {
-      title: title,
       profile: profile,
       profilePictureUrl: profilePictureUrl,
     },

@@ -1,13 +1,11 @@
 import { Container, Link, Typography } from "@mui/material";
-import { GetStaticProps } from "next";
+import { NextSeo } from "next-seo";
 import { getDefaultLayout } from "../component/layout";
-import ResponsiveAppBar from "../component/nav";
-import { getSiteTitle } from "../lib/dataFetching";
 
-const Error404 = (props: { title: string }) => {
+const Error404 = () => {
   return (
     <>
-      <ResponsiveAppBar title={props.title}></ResponsiveAppBar>
+      <NextSeo noindex={true} />
       <Container sx={{ marginY: 1 }}>
         <Typography
           variant="h3"
@@ -26,17 +24,6 @@ const Error404 = (props: { title: string }) => {
       </Container>
     </>
   );
-};
-
-export const getStaticProps: GetStaticProps = async () => {
-  // Run API calls in parallel
-  const [title] = await Promise.all([getSiteTitle()]);
-  return {
-    props: {
-      title: title,
-    },
-    revalidate: false,
-  };
 };
 
 Error404.getLayout = getDefaultLayout;

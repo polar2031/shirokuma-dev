@@ -1,5 +1,6 @@
-import { ReactElement, ReactNode } from "react";
+import { Fragment, ReactElement, ReactNode } from "react";
 import Footer from "./footer";
+import ResponsiveAppBar from "./nav";
 
 type Props = {
   children: ReactNode;
@@ -7,14 +8,11 @@ type Props = {
 
 export default function Layout({ children }: Props) {
   return (
-    <>
-      <div className="main-content-wrapper">
-        {children}
-        <div className="footer">
-          <Footer></Footer>
-        </div>
-      </div>
-    </>
+    <div className="main-content-wrapper">
+      <ResponsiveAppBar></ResponsiveAppBar>
+      {children}
+      <Footer></Footer>
+    </div>
   );
 }
 

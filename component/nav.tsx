@@ -10,13 +10,14 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import Link from "@mui/material/Link";
+import { Variable } from "../site-config";
 
 const pages = [
   { name_display: "Blog", url: "/blogs" },
   { name_display: "About", url: "/about" },
 ];
 
-const ResponsiveAppBar = (props: { title: string }) => {
+const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -44,7 +45,7 @@ const ResponsiveAppBar = (props: { title: string }) => {
               underline="none"
               sx={{ color: "primary.contrastText" }}
             >
-              {props.title}
+              {Variable.title}
             </Link>
           </Typography>
 
@@ -99,7 +100,7 @@ const ResponsiveAppBar = (props: { title: string }) => {
               underline="none"
               sx={{ color: "primary.contrastText" }}
             >
-              {props.title}
+              {Variable.title}
             </Link>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
