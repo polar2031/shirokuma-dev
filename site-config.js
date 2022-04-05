@@ -13,6 +13,7 @@ const SiteConfig = {
   // this part is equivalent to content in next-seo.config
   SEO: {
     title: "Shirokuma.dev",
+    canonical: "https://Shirokuma.dev",
     openGraph: {
       type: "website",
       title: "Shirokuma.dev",

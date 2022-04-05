@@ -1,3 +1,4 @@
+import path from "path";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import {
@@ -21,7 +22,7 @@ import {
   IArticleList,
 } from "../lib/dataFetching";
 import TagList from "../component/tagList";
-import { Variable } from "../site-config";
+import { SEO, Variable } from "../site-config";
 
 const Blog = (props: {
   articles: IArticleList;
@@ -37,9 +38,9 @@ const Blog = (props: {
         description={`文章列表 - page ${props.currentPage}`}
         openGraph={{
           title: `文章列表`,
-          url: `${Variable.siteUrl}${asPath}`,
+          url: path.join(SEO.canonical, asPath),
         }}
-        canonical={`${Variable.siteUrl}${asPath}`}
+        canonical={path.join(SEO.canonical, asPath)}
       />
       <main>
         <Container sx={{ marginY: 2 }}>

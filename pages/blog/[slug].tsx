@@ -1,4 +1,5 @@
 import { ParsedUrlQuery } from "querystring";
+import path from "path";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Script from "next/script";
 import ReactMarkdown from "react-markdown";
@@ -16,7 +17,7 @@ import {
 } from "../../lib/dataFetching";
 import TagList from "../../component/tagList";
 import "prismjs/components/prism-bash";
-import { Variable } from "../../site-config";
+import { SEO, Variable } from "../../site-config";
 
 interface IParams extends ParsedUrlQuery {
   slug: string;
@@ -56,9 +57,9 @@ const Article = (props: { article: IArticle }) => {
         openGraph={{
           type: "article",
           title: `${props.article.title}`,
-          url: `${Variable.siteUrl}${asPath}`,
+          url: path.join(SEO.canonical, asPath),
         }}
-        canonical={`${Variable.siteUrl}${asPath}`}
+        canonical={path.join(SEO.canonical, asPath)}
       />
       <Script src="/prism.js" />
       <Container sx={{ marginY: 1 }}>
