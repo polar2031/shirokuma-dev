@@ -11,7 +11,10 @@ const SiteConfig = {
   },
   // check https://github.com/garmeeh/next-seo for more information
   // this part is equivalent to content in next-seo.config
-  SEO: {},
+  SEO: {
+    title: "Your Awesome Site",
+    canonical: "http://localhost:3000",
+  },
 };
 
 module.exports = SiteConfig;

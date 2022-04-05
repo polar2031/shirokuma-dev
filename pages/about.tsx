@@ -1,3 +1,4 @@
+import path from "path";
 import { GetStaticProps } from "next";
 import {
   Box,
@@ -23,7 +24,7 @@ import {
   getProfilePictureUrl,
   IProfile,
 } from "../lib/dataFetching";
-import { Variable } from "../site-config";
+import { SEO, Variable } from "../site-config";
 
 const Profile = (props: { profile: IProfile; profilePictureUrl: string }) => {
   const { asPath } = useRouter();
@@ -33,7 +34,7 @@ const Profile = (props: { profile: IProfile; profilePictureUrl: string }) => {
       <NextSeo
         title={`關於 | ${Variable.title}`}
         openGraph={{ title: `關於` }}
-        canonical={`${Variable.siteUrl}${asPath}`}
+        canonical={path.join(SEO.canonical, asPath)}
       ></NextSeo>
       <Container
         sx={{
@@ -45,7 +46,7 @@ const Profile = (props: { profile: IProfile; profilePictureUrl: string }) => {
           component="h1"
           align="center"
           sx={{ fontWeight: 700 }}
-        >{`關於我`}</Typography>
+        >{`關於`}</Typography>
         <Grid container spacing={2}>
           {props.profilePictureUrl ? (
             <Grid item xs={12} md={6}>
