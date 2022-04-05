@@ -7,17 +7,17 @@ const SiteConfig = {
     copyright: "© 2022 Shirokuma.dev",
     poweredBy: [{ name: "Next.js", url: "https://nextjs.org/" }],
     // cms
-    apiUrl: "https://www.shirokuma.dev/strapi",
+    apiUrl: "https://api.shirokuma.dev/",
   },
   // check https://github.com/garmeeh/next-seo for more information
   // this part is equivalent to content in next-seo.config
   SEO: {
     title: "Shirokuma.dev",
-    canonical: "https://Shirokuma.dev",
+    canonical: "https://blog.shirokuma.dev",
     openGraph: {
       type: "website",
       title: "Shirokuma.dev",
-      url: "https://Shirokuma.dev",
+      url: "https://blogs.shirokuma.dev",
       site_name: "Shirokuma.dev",
       images: [
         {
