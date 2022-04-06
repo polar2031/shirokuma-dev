@@ -57,9 +57,9 @@ const Article = (props: { article: IArticle }) => {
         openGraph={{
           type: "article",
           title: `${props.article.title}`,
-          url: path.join(SEO.canonical, asPath),
+          url: new URL(asPath, SEO.canonical).href,
         }}
-        canonical={path.join(SEO.canonical, asPath)}
+        canonical={new URL(asPath, SEO.canonical).href}
       />
       <Script src="/prism.js" />
       <Container sx={{ marginY: 1 }}>
