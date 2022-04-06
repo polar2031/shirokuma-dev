@@ -1,5 +1,4 @@
 import path from "path";
-import { GetServerSideProps } from "next";
 import Link from "next/link";
 import {
   Box,
@@ -15,27 +14,38 @@ import {
 } from "@mui/material";
 import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
+import useSWR from "swr";
 import { getDefaultLayout } from "../component/layout";
-import {
-  getArticleListByPage,
-  getArticlePageSize,
-  IArticleList,
-} from "../lib/dataFetching";
+import { getArticleListByPage, getArticlePageSize } from "../lib/dataFetching";
 import TagList from "../component/tagList";
 import { SEO, Variable } from "../site-config";
 
-const Blog = (props: {
-  articles: IArticleList;
-  pageSize: number;
-  currentPage: number;
-}) => {
-  const { asPath } = useRouter();
+const Blog = () => {
+  const { query, asPath, pathname } = useRouter();
+
+  let currentPage: number;
+  currentPage = parseInt(query.page as string);
+  currentPage = isNaN(currentPage) ? 1 : currentPage;
+
+  const { data, error } = useSWR("getArticleListByPage", () => {
+    return Promise.all([
+      getArticleListByPage(currentPage),
+      getArticlePageSize(),
+    ]);
+  });
+
+  if (error) return <div>Failed to load</div>;
+  if (!data) return <div>Loading...</div>;
+
+  const articles = data[0];
+  const pageSize = data[1];
+
   return (
     <>
       <NextSeo
         noindex={true}
-        title={`文章列表 | ${Variable.title} - page ${props.currentPage}`}
-        description={`文章列表 - page ${props.currentPage}`}
+        title={`文章列表 | ${Variable.title} - page ${currentPage}`}
+        description={`文章列表 - page ${currentPage}`}
         openGraph={{
           title: `文章列表`,
           url: path.join(SEO.canonical, asPath),
@@ -45,7 +55,7 @@ const Blog = (props: {
       <main>
         <Container sx={{ marginY: 2 }}>
           <Grid container spacing={2} sx={{ marginY: 2 }}>
-            {props.articles.map((article) => {
+            {articles.map((article) => {
               return (
                 <Grid item xs={12} md={6} key={article.canonicalUrl}>
                   <Card sx={{ height: "250px" }}>
@@ -90,13 +100,15 @@ const Blog = (props: {
             }}
           >
             <Pagination
-              count={props.pageSize}
-              page={props.currentPage}
+              count={pageSize}
+              page={currentPage}
               shape="rounded"
               renderItem={(item) => (
                 <PaginationItem
                   component={MuiLink}
-                  href={`/blog${item.page === 1 ? "" : `?page=${item.page}`}`}
+                  href={`${pathname}${
+                    item.page === 1 ? "" : `?page=${item.page}`
+                  }`}
                   {...item}
                 />
               )}
@@ -106,29 +118,6 @@ const Blog = (props: {
       </main>
     </>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  let page: number;
-  try {
-    page = parseInt(context.query.page as string);
-    page = isNaN(page) ? 1 : page;
-  } catch {
-    page = 1;
-  }
-
-  const [articleList, pageSize] = await Promise.all([
-    getArticleListByPage(page),
-    getArticlePageSize(),
-  ]);
-
-  return {
-    props: {
-      articles: articleList,
-      pageSize: pageSize,
-      currentPage: page,
-    },
-  };
 };
 
 Blog.getLayout = getDefaultLayout;

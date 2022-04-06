@@ -26,7 +26,11 @@ export async function fetchAPI(
   const mergedOptions = {
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + process.env.STRAPI_TOKEN || "",
+      // remove auth part for client side call
+      Authorization:
+        typeof window != "undefined"
+          ? ""
+          : "Bearer " + process.env.STRAPI_TOKEN || "",
     },
     ...options,
   };
