@@ -34,7 +34,7 @@ const Profile = (props: { profile: IProfile; profilePictureUrl: string }) => {
       <NextSeo
         title={`關於 | ${Variable.title}`}
         openGraph={{ title: `關於` }}
-        canonical={path.join(SEO.canonical, asPath)}
+        canonical={new URL(asPath, SEO.canonical).href}
       ></NextSeo>
       <Container
         sx={{

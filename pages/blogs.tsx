@@ -1,5 +1,3 @@
-import path from "path";
-import { GetServerSideProps } from "next";
 import Link from "next/link";
 import {
   Box,
@@ -11,10 +9,12 @@ import {
   Link as MuiLink,
   Pagination,
   PaginationItem,
+  Skeleton,
   Typography,
 } from "@mui/material";
 import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
+import useSWR from "swr";
 import { getDefaultLayout } from "../component/layout";
 import {
   getArticleListByPage,
@@ -24,111 +24,146 @@ import {
 import TagList from "../component/tagList";
 import { SEO, Variable } from "../site-config";
 
-const Blog = (props: {
-  articles: IArticleList;
-  pageSize: number;
-  currentPage: number;
-}) => {
-  const { asPath } = useRouter();
+const Blog = () => {
+  const { query, asPath, pathname, isReady } = useRouter();
+  let currentPage: number | undefined;
+  currentPage = parseInt(query.page as string);
+  currentPage = isNaN(currentPage) ? 1 : currentPage;
+
+  const { data, error } = useSWR(
+    // wait router
+    isReady ? "getArticleListByPage" : null,
+    () => {
+      return Promise.all([
+        getArticleListByPage(currentPage),
+        getArticlePageSize(),
+      ]);
+    }
+  );
+
+  if (error) return <div>Failed to load</div>;
+
   return (
     <>
       <NextSeo
         noindex={true}
-        title={`文章列表 | ${Variable.title} - page ${props.currentPage}`}
-        description={`文章列表 - page ${props.currentPage}`}
+        title={`文章列表 | ${Variable.title} - page ${
+          isReady ? currentPage : ""
+        }`}
+        description={`文章列表 - page ${isReady ? currentPage : ""}`}
         openGraph={{
           title: `文章列表`,
-          url: path.join(SEO.canonical, asPath),
+          url: new URL(pathname, SEO.canonical).href,
         }}
-        canonical={path.join(SEO.canonical, asPath)}
+        canonical={new URL(pathname, SEO.canonical).href}
       />
       <main>
         <Container sx={{ marginY: 2 }}>
           <Grid container spacing={2} sx={{ marginY: 2 }}>
-            {props.articles.map((article) => {
-              return (
-                <Grid item xs={12} md={6} key={article.canonicalUrl}>
-                  <Card sx={{ height: "250px" }}>
-                    <CardContent sx={{ height: "200px" }}>
-                      {/* title */}
-                      <Typography component="h2" variant="h5">
-                        {article.title}
-                      </Typography>
-
-                      {/* list tag */}
-                      <TagList tags={article.tags}></TagList>
-
-                      {/* summary */}
-                      <Typography
-                        variant="subtitle1"
-                        paragraph
-                        sx={{
-                          display: "-webkit-box",
-                          WebkitBoxOrient: "vertical",
-                          WebkitLineClamp: 2,
-                          overflow: "hidden",
-                        }}
-                      >
-                        {article.summary}
-                      </Typography>
-                    </CardContent>
-                    <CardActions sx={{ justifyContent: "end" }}>
-                      <Link href={`/blog/${article.canonicalUrl}`} passHref>
-                        <MuiLink underline="none">Read more...</MuiLink>
-                      </Link>
-                    </CardActions>
-                  </Card>
-                </Grid>
-              );
-            })}
+            {data ? renderGridItem(data[0]) : renderGridItem([], true)}
           </Grid>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              marginY: 2,
-            }}
-          >
-            <Pagination
-              count={props.pageSize}
-              page={props.currentPage}
-              shape="rounded"
-              renderItem={(item) => (
-                <PaginationItem
-                  component={MuiLink}
-                  href={`/blog${item.page === 1 ? "" : `?page=${item.page}`}`}
-                  {...item}
-                />
-              )}
-            />
-          </Box>
+          {data ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                marginY: 2,
+              }}
+            >
+              <Pagination
+                count={data[1]}
+                page={currentPage}
+                shape="rounded"
+                renderItem={(item) => (
+                  <PaginationItem
+                    component={MuiLink}
+                    href={`${pathname}${
+                      item.page === 1 ? "" : `?page=${item.page}`
+                    }`}
+                    {...item}
+                  />
+                )}
+              />
+            </Box>
+          ) : (
+            <></>
+          )}
         </Container>
       </main>
     </>
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  let page: number;
-  try {
-    page = parseInt(context.query.page as string);
-    page = isNaN(page) ? 1 : page;
-  } catch {
-    page = 1;
+const renderGridItem = (articles: IArticleList, sketch = false) => {
+  if (sketch) {
+    articles = [];
+    for (let i = 0; i < 4; i++) {
+      articles.push({
+        title: "",
+        canonicalUrl: "",
+        tags: [""],
+        summary: "",
+      });
+    }
   }
+  return (
+    <Grid container spacing={2} sx={{ marginY: 2 }}>
+      {articles.map((article, index) => {
+        return (
+          <Grid item xs={12} md={6} key={sketch ? index : article.canonicalUrl}>
+            <Card sx={{ height: "250px" }}>
+              <CardContent sx={{ height: "200px" }}>
+                {/* title */}
+                <Typography component="h2" variant="h5">
+                  {sketch ? <Skeleton width={"20ch"} /> : article.title}
+                </Typography>
 
-  const [articleList, pageSize] = await Promise.all([
-    getArticleListByPage(page),
-    getArticlePageSize(),
-  ]);
+                {/* list tag */}
+                {sketch ? (
+                  <Skeleton width={"5ch"} />
+                ) : (
+                  <TagList tags={article.tags}></TagList>
+                )}
 
-  return {
-    props: {
-      articles: articleList,
-      pageSize: pageSize,
-      currentPage: page,
-    },
-  };
+                {/* summary */}
+
+                {sketch ? (
+                  // overflow option will cause some issue with skeleton
+                  <Typography variant="subtitle1" paragraph>
+                    <Skeleton />
+                    <Skeleton />
+                    <Skeleton />
+                  </Typography>
+                ) : (
+                  <Typography
+                    variant="subtitle1"
+                    paragraph
+                    sx={{
+                      display: "-webkit-box",
+                      WebkitBoxOrient: "vertical",
+                      WebkitLineClamp: 2,
+                      overflow: "hidden",
+                    }}
+                  >
+                    {article.summary}
+                  </Typography>
+                )}
+              </CardContent>
+              <CardActions sx={{ justifyContent: "end" }}>
+                {sketch ? (
+                  <Skeleton width={"12ch"} />
+                ) : (
+                  <Link href={`/blog/${article.canonicalUrl}`} passHref>
+                    <MuiLink underline="none">Read more...</MuiLink>
+                  </Link>
+                )}
+              </CardActions>
+            </Card>
+          </Grid>
+        );
+      })}
+    </Grid>
+  );
 };
 
 Blog.getLayout = getDefaultLayout;
